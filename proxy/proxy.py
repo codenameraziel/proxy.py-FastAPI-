@@ -3,6 +3,7 @@ import requests
 
 app = FastAPI()
 
+# URL interna do Ollama (nome do serviço no docker-compose)
 OLLAMA_URL = "http://ollama:11434/api/chat"
 
 @app.post("/v1/chat/completions")
@@ -15,10 +16,14 @@ async def chat_completions(request: Request):
     ollama_payload = {
         "model": model,
         "messages": messages,
-        "stream": False   # força resposta única em JSON
+        "stream": False,   # força resposta única em JSON
+        "options": {
+            "num_predict": 128   # limita saída a ~128 tokens
+        }
     }
 
-    resp = requests.post(OLLAMA_URL, json=ollama_payload)
+    # Timeout aumentado para evitar abortar cedo
+    resp = requests.post(OLLAMA_URL, json=ollama_payload, timeout=120)
     data = resp.json()
 
     # Extrair texto da resposta
