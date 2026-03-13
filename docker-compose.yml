@@ -11,7 +11,7 @@ services:
     restart: unless-stopped
 
   ollama-proxy:
-    build: ./proxy           # pasta onde está seu proxy.py
+    build: ./proxy           # pasta onde esta seu proxy.py
     container_name: ollama-proxy
     ports:
       - "8000:8000"          # expoe proxy estilo OpenAI
