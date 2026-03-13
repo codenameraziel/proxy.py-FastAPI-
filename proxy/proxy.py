@@ -11,23 +11,30 @@ async def chat_completions(request: Request):
     model = body.get("model", "mistral")
     messages = body.get("messages", [])
 
-    # Adaptar formato para Ollama
+    # Payload para Ollama
     ollama_payload = {
         "model": model,
-        "messages": messages
+        "messages": messages,
+        "stream": False   # força resposta única em JSON
     }
 
     resp = requests.post(OLLAMA_URL, json=ollama_payload)
     data = resp.json()
 
-    # Adaptar resposta para formato OpenAI
+    # Extrair texto da resposta
+    content = data.get("message", {}).get("content", "")
+
+    # Adaptar para formato OpenAI
     return {
         "id": "chatcmpl-ollama",
         "object": "chat.completion",
         "choices": [
             {
                 "index": 0,
-                "message": data["message"],
+                "message": {
+                    "role": "assistant",
+                    "content": content
+                },
                 "finish_reason": "stop"
             }
         ]
