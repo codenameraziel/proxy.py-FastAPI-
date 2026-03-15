@@ -4,7 +4,7 @@ import requests
 app = FastAPI()
 
 # URL interna do Ollama (nome do serviço no docker-compose)
-OLLAMA_URL = "http://ollama:11434/api/chat"
+OLLAMA_URL = "http://192.168.100.105:11434/api/chat"
 
 @app.post("/v1/chat/completions")
 async def chat_completions(request: Request):
